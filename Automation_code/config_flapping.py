@@ -29,6 +29,7 @@ mgmtStatic = """ top
   """
 exitLOOP = True
 while exitLOOP:
+    i = 0
     try:
         with ConnectHandler(**dn) as net_connect:
             print('Starting load-factory override')
@@ -65,6 +66,8 @@ while exitLOOP:
             #exitLOOP = net_connect.send_command_timing('configure')
             exitLOOP = net_connect.check_config_mode()
             print('Finished rollback1 ')
+    i += 1
+    print (f'ran for {i} times until now..')
     except Exception as e:
         print(e)
         exitLOOP = False

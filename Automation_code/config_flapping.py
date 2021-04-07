@@ -1,4 +1,6 @@
+#!/usr/bin/python3
 from netmiko import ConnectHandler
+import sys,os
 import time
 dn = {
     "device_type": "cisco_ios",
@@ -29,45 +31,46 @@ mgmtStatic = """ top
   """
 exitLOOP = True
 while exitLOOP:
-    i = 0
-    try:
-        with ConnectHandler(**dn) as net_connect:
-            print('Starting load-factory override')
-            out = net_connect.send_command_timing('configure')
-            print(out)
-            out = net_connect.send_command_timing('load override factory-default')
-            print(out)
-            time.sleep(60)
-            out = net_connect.send_command_timing(mgmtInterfaces)
-            print(out)
-            out = net_connect.send_command_timing(mgmtStatic)
-            print(out)
-            out = net_connect.send_command_timing('commit')
-            print(out)
-            time.sleep(300)
-            #exitLOOP = net_connect.send_command_timing('configure')
-            exitLOOP = net_connect.check_config_mode()
-            #print(exitLOOP)
-            print('Finished load-factory override')
-    except Exception as e:
-        print(e)
-        exitLOOP = False
-    try:
-        with ConnectHandler(**dn) as net_connect:
-            print('Starting rollback1 ')
-            out = net_connect.send_command_timing('configure')
-            print(out)
-            out = net_connect.send_command_timing('rollback 1')
-            print(out)
-            time.sleep(60)
-            out = net_connect.send_command_timing('commit')
-            print(out)
-            time.sleep(180)
-            #exitLOOP = net_connect.send_command_timing('configure')
-            exitLOOP = net_connect.check_config_mode()
-            print('Finished rollback1 ')
-    i += 1
-    print (f'ran for {i} times until now..')
-    except Exception as e:
-        print(e)
-        exitLOOP = False
+  flag = 0
+  try:
+      with ConnectHandler(**dn) as net_connect:
+          print('Starting load-factory override\n\n')
+          out = net_connect.send_command_timing('configure')
+          print(out)
+          out = net_connect.send_command_timing('load override factory-default')
+          print(out)
+          time.sleep(60)
+          out = net_connect.send_command_timing(mgmtInterfaces)
+          print(out)
+          out = net_connect.send_command_timing(mgmtStatic)
+          print(out)
+          out = net_connect.send_command_timing('commit')
+          print(out)
+          time.sleep(300)
+          #exitLOOP = net_connect.send_command_timing('configure')
+          exitLOOP = net_connect.check_config_mode()
+          #print(exitLOOP)
+          print('Finished load-factory override')
+  except Exception as e:
+      print(e)
+      exitLOOP = False
+  try:
+      with ConnectHandler(**dn) as net_connect:
+          print('Starting rollback1 ')
+          out = net_connect.send_command_timing('configure')
+          print(out)
+          out = net_connect.send_command_timing('rollback 1')
+          print(out)
+          time.sleep(60)
+          out = net_connect.send_command_timing('commit')
+          print(out)
+          time.sleep(180)
+          #exitLOOP = net_connect.send_command_timing('configure')
+          exitLOOP = net_connect.check_config_mode()
+          print('Finished rollback1 ')
+      flag += 1
+      print(f"ran for {flag} times until now..")
+      os.system(f"echo 'ran for {flag} times until now..'>> config_flapping.log")
+  except Exception as e:
+      print(e)
+      exitLOOP = False

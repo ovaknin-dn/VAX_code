@@ -30,8 +30,8 @@ mgmtStatic = """ top
   !
   """
 exitLOOP = True
-while exitLOOP:
   flag = 0
+while exitLOOP:
   try:
       with ConnectHandler(**dn) as net_connect:
           print('Starting load-factory override\n\n')
@@ -70,7 +70,8 @@ while exitLOOP:
           print('Finished rollback1 ')
       flag += 1
       print(f"ran for {flag} times until now..")
-      os.system(f"echo 'ran for {flag} times until now..'>> config_flapping.log")
+      os.system(f"echo 'ran for {flag} times until now..'>> ~/config_flapping.log")
+      print('----------------------------------------------------------------------')
   except Exception as e:
       print(e)
       exitLOOP = False
